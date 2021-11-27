@@ -5,15 +5,31 @@ import Button from "react-bootstrap/Button";
 class ResultsPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { noOfClicks: 0 };
+    this.state = { noOfClicks: 0, noOfConfirms: 0, noOfDenys: 0 };
   }
 
-  handleClick = () => {
-    this.setState({ noOfClicks: this.state.noOfClicks + 1 });
+  updateTotal = () => {
+    this.setState({
+      noOfClicks: this.state.noOfConfirms + this.state.noOfDenys + 1,
+    });
+  };
+
+  handleConfirm = () => {
+    this.setState({ noOfConfirms: this.state.noOfConfirms + 1 });
+    this.updateTotal();
+  };
+
+  handleDeny = () => {
+    this.setState({ noOfDenys: this.state.noOfDenys + 1 });
+    this.updateTotal();
+  };
+
+  handleAdd = () => {
+    this.props.addLibraryPlaces(this.props.place);
   };
   render() {
     return (
-      <Card style={{ width: "18rem" }}>
+      <Card style={{ background: "#111", width: "26rem" }}>
         <Card.Img
           variant="top"
           src={
@@ -23,17 +39,24 @@ class ResultsPage extends React.Component {
           }
           alt={this.props.place.city}
         />
-        <Card.Body>
+        <Card.Body style={{ backgroundColor: "grey" }}>
           <Card.Title>{this.props.place.location}</Card.Title>
           <Card.Text>
             {this.props.place.description}
-            Latitude : {this.props.place.latitude}
-            Longitude :{this.props.place.longitude}
+            <br />
+            Latitude : {this.props.place.latitude} Longitude :{" "}
+            {this.props.place.longitude}
           </Card.Text>
-          <Button variant="primary" onClick={this.handleClick}>
-            Favourite
+          <Button variant="secondary" onClick={this.handleConfirm}>
+            👻{`: ${this.state.noOfConfirms}`}
           </Button>
-          <p>No of favourites &#xf6e2;: {this.state.noOfClicks}</p>
+          <Button variant="secondary" onClick={this.handleDeny}>
+            🚫{`: ${this.state.noOfDenys}`}
+          </Button>
+          <p>Visits: {this.state.noOfClicks}</p>
+          <Button variant="secondary" onClick={this.handleAdd}>
+            Add to my library
+          </Button>
         </Card.Body>
       </Card>
     );
